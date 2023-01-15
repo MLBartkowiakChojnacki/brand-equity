@@ -44,17 +44,13 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
 
 
 def get_points_info(data_frame: pd.DataFrame, columns: list, index: str, points: int) -> pd.DataFrame:
-    
     points = df_source[index + columns].dropna(how='all')
     points = points.set_index(index[0])
-    
     columns = points.columns
     df = pd.DataFrame()
-    
     for column in columns:
         points = df_source[[index[0], column]].dropna()
         df = df.append(points)
-    
     df = df.reset_index(drop = True)
     df["COMPANIES"] = df[columns].apply(lambda x: x[x.notna()][0], axis=1)
     return df[["RecordNo","COMPANIES"]]
