@@ -10,30 +10,34 @@ import pandas as pd
 import csv
 import numpy as np
 
-os.chdir(r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
-
-with open('PROJECT_INFO.csv', 'r') as csvfile:
-    dialect = csv.Sniffer().sniff(csvfile.readline())
-    df_0 = pd.read_csv('Source.Datafile.Brand.Equity.csv', sep = dialect.delimiter)
-
-with open('COMPANY.csv', 'r') as csvfile:
-    dialect = csv.Sniffer().sniff(csvfile.readline())
-    df_1 = pd.read_csv('COMPANY.csv', sep = dialect.delimiter)
-
-with open('PROJECT_INFO.csv', 'r') as csvfile:
-    dialect = csv.Sniffer().sniff(csvfile.readline())
-    df_2 = pd.read_csv('PROJECT_INFO.csv', sep = dialect.delimiter)
+def set_working_directory(path: str) -> None:
+    os.chdir(path)
 
 
-comb = df_1.merge(df_2, how='cross')
+def open_file(file_name: str) -> pd.DataFrame:
+    with open(f'{file_name}.csv', 'r') as csvfile:
+        dialect = csv.Sniffer().sniff(csvfile.readline())
+        df = pd.read_csv(f'{file_name}.csv', sep = dialect.delimiter)
+    return df
+        
 
-#comb[(comb['RecordNo'] == 1135) & (comb['COMPANY_CODE'] == 106)]
+def get_unique_values(data_frame: pd.DataFrame
+                      , selected_columns: list) -> pd.DataFrame:
+    unique_values = data_frame[selected_columns]
+    unique_values.drop_duplicates()
+    return unique_values
 
-comb.query('RecordNo == 1135 & COMPANY_CODE == 106')
 
-#%%
-df_0 = df_0.fillna(np.nan)
-a_5 = df_0['Q7M1'][df_0['Q7M1'] != 999].to_frame()
-a_4 = df_0[['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']]
-# a_5 = {5: a_5.to_dict()
-#        , 4: a_4.to_dict()}
+def combine(data_frame_1: pd.DataFrame
+            , data_frame_2: pd.DataFrame
+            , method: str = 'cross') -> pd.DataFrame:
+    combined = data_frame_1.merge(data_frame_2, how='cross')
+    return combined
+
+
+if __name__ == "__main__":
+    set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
+    df_source = open_file('Source.Datafile.Brand.Equity')
+    companies = open_file('COMPANY')
+    record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
+    df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
