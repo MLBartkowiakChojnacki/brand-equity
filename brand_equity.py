@@ -85,4 +85,3 @@ if __name__ == "__main__":
     points_1_q7q8['POINTS'] = 1
     df_points = pd.concat([df_points, points_1_q7q8], ignore_index=True)
     df_points = pd.merge(df_points, companies,  how='left', left_on=['COMPANIES'], right_on = ['COMPANY_CODE'])
-
