@@ -41,3 +41,8 @@ if __name__ == "__main__":
     companies = open_file('COMPANY')
     record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
     df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
+    df_combined = df_combined.fillna(np.nan)
+    points_5_q7q8 = df_source['Q7M1'][df_source['Q7M1'] != 999].to_frame()
+    points_4_q7q8 = df_source[['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
+    points_2_q7q8 = df_source[['Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
+    
