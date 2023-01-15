@@ -43,7 +43,7 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
     return flatten
 
 
-if __name__ == "__main__":
+def main():
     set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
     df_source = open_file('Source.Datafile.Brand.Equity')
     companies = open_file('COMPANY')
@@ -51,8 +51,17 @@ if __name__ == "__main__":
     df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
     df_combined = df_combined.fillna(np.nan)
     points_5_q7q8 = df_source['Q7M1'][df_source['Q7M1'] != 999].to_frame()
+    points_5_q7q8.columns = ['P5_Q7Q8']
+    points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['P5_Q7Q8'])
     points_4_q7q8 = df_source[['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
     points_4_q7q8 = flatten_data_frame(data_frame = points_4_q7q8)
     points_4_q7q8 = get_unique_values(data_frame = points_4_q7q8, selected_columns = ['COMPANIES'])
+    points_4_q7q8.columns = ['P4_Q7Q8']
     points_2_q7q8 = df_source[['Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
-    
+    points_2_q7q8 = flatten_data_frame(data_frame = points_2_q7q8)
+    points_2_q7q8 = get_unique_values(data_frame = points_2_q7q8, selected_columns = ['COMPANIES'])
+    points_2_q7q8.columns = ['P2_Q7Q8']
+
+
+if __name__ == "__main__":
+    main()
