@@ -42,7 +42,7 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
         flatten = flatten.dropna()
     return flatten
 
-
+#%%
 if __name__ == "__main__":
     set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
     df_source = open_file('Source.Datafile.Brand.Equity')
@@ -50,15 +50,66 @@ if __name__ == "__main__":
     record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
     df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
     df_combined = df_combined.fillna(np.nan)
-    points_5_q7q8 = df_source['Q7M1'][df_source['Q7M1'] != 999].to_frame()
-    points_5_q7q8.columns = ['P5_Q7Q8']
-    points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['P5_Q7Q8'])
-    points_4_q7q8 = df_source[['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
+    points_5_q7q8 = df_source[['RecordNo','Q7M1']][df_source['Q7M1'] != 999]
+    points_5_q7q8.columns = ['RECORD_NO', 'COMPANIES']
+    points_5_q7q8['POINTS'] = 5
+    points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['RECORD_NO', 'COMPANIES'])
+#%%
+    points_4_q7q8 = df_source[['RecordNo', 'Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
     points_4_q7q8 = flatten_data_frame(data_frame = points_4_q7q8)
     points_4_q7q8 = get_unique_values(data_frame = points_4_q7q8, selected_columns = ['COMPANIES'])
-    points_4_q7q8.columns = ['P4_Q7Q8']
-    points_2_q7q8 = df_source[['Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
+    points_4_q7q8.columns = ['COMPANIES']
+    points_4_q7q8['POINTS'] = 4
+    points_2_q7q8 = df_source[['RecordNo', 'Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
     points_2_q7q8 = flatten_data_frame(data_frame = points_2_q7q8)
     points_2_q7q8 = get_unique_values(data_frame = points_2_q7q8, selected_columns = ['COMPANIES'])
-    points_2_q7q8.columns = ['P2_Q7Q8']
+    points_2_q7q8.columns = ['COMPANIES']
+    points_2_q7q8['POINTS'] = 2
+    df_points = pd.concat([points_5_q7q8, points_4_q7q8, points_2_q7q8], ignore_index=True)
+    df_points = df_points.drop_duplicates(subset='COMPANIES', keep="first")   
+    df_points = df_points.query('COMPANIES not in [999, 998]')
+
+
+#%%
+def get_points_info(data_frame: pd.DataFrame, columns: list, index: str):
     
+    points = df_source[index + columns].dropna(how='all')
+    points = points.set_index(index[0])
+    
+    columns = points.columns
+    df = pd.DataFrame()
+    
+    for column in columns:
+        points = df_source[[index[0], column]].dropna()
+        df = df.append(points)
+    
+    df = df.reset_index(drop = True)
+    df["COMPANIES"] = df[columns].apply(lambda x: x[x.notna()][0], axis=1)
+    return df
+
+#%%
+cols = ['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']
+
+a = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
+
+#%%
+points_4_q7q8 = df_source[['RecordNo', 'Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
+#points_4_q7q8 = points_4_q7q8.set_index('RecordNo')
+
+columns = points_4_q7q8.columns[points_4_q7q8.columns != 'RecordNo']
+df_0 = pd.DataFrame()
+
+for column in columns:
+    points_4_q7q8 = df_source[['RecordNo', column]].dropna()
+    df_0 = df_0.append(points_4_q7q8)
+
+df_0 = df_0.reset_index(drop = True)
+cols = ['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']
+df_0["COMPANIES"] = df_0[cols].apply(lambda x: x[x.notna()][0], axis=1)
+
+#%%
+a = [1, 2, 3]
+b = [4, 5, 6]
+
+a + b
+#%%
