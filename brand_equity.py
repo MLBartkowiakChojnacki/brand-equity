@@ -43,7 +43,7 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
     return flatten
 
 
-def main():
+if __name__ == "__main__":
     set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
     df_source = open_file('Source.Datafile.Brand.Equity')
     companies = open_file('COMPANY')
@@ -61,7 +61,4 @@ def main():
     points_2_q7q8 = flatten_data_frame(data_frame = points_2_q7q8)
     points_2_q7q8 = get_unique_values(data_frame = points_2_q7q8, selected_columns = ['COMPANIES'])
     points_2_q7q8.columns = ['P2_Q7Q8']
-
-
-if __name__ == "__main__":
-    main()
+    
