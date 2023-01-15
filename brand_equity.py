@@ -85,3 +85,4 @@ if __name__ == "__main__":
     df_points = df_points.drop_duplicates(subset=['RECORD_NO','COMPANIES'], keep="first")   
     df_points = df_points.query('COMPANIES not in [999, 998]')
     df_points = pd.merge(df_points, companies,  how='left', left_on=['COMPANIES'], right_on = ['COMPANY_CODE'])
+    #kolejno dodac jedynki
