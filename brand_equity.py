@@ -65,8 +65,9 @@ if __name__ == "__main__":
     df_source = open_file('Source.Datafile.Brand.Equity')
     companies = open_file('COMPANY')
     record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
-    #df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
-    #df_combined = df_combined.fillna(np.nan)
+    df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
+    df_combined = df_combined.fillna(np.nan)
+    df_combined.columns = ['COMPANIES', 'CLIENT_NAME', 'RECORD_NO']
     points_5_q7q8 = df_source[['RecordNo','Q7M1']][df_source['Q7M1'] != 999]
     points_5_q7q8.columns = ['RECORD_NO', 'COMPANIES']
     points_5_q7q8['POINTS'] = 5
@@ -84,5 +85,8 @@ if __name__ == "__main__":
     df_points = pd.concat([points_5_q7q8, points_4_q7q8, points_2_q7q8], ignore_index=True)
     df_points = df_points.drop_duplicates(subset=['RECORD_NO','COMPANIES'], keep="first")   
     df_points = df_points.query('COMPANIES not in [999, 998]')
+    points_1_q7q8 = pd.concat([df_points[['RECORD_NO', 'COMPANIES']], df_combined[['RECORD_NO', 'COMPANIES']]]).drop_duplicates(keep=False)
+    points_1_q7q8['POINTS'] = 1
+    df_points = pd.concat([df_points, points_1_q7q8], ignore_index=True)
     df_points = pd.merge(df_points, companies,  how='left', left_on=['COMPANIES'], right_on = ['COMPANY_CODE'])
-    #kolejno dodac jedynki
+
