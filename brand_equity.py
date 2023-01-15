@@ -10,7 +10,7 @@ import pandas as pd
 import csv
 import numpy as np
 
-os.chdir(r'C:\Users\krzys\Desktop\data science\5 semestr\Data science professional project\Brand equity\Brand.Equity\project_data')
+os.chdir(r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
 
 with open('PROJECT_INFO.csv', 'r') as csvfile:
     dialect = csv.Sniffer().sniff(csvfile.readline())
