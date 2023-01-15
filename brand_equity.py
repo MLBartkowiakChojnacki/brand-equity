@@ -24,7 +24,7 @@ def open_file(file_name: str) -> pd.DataFrame:
 def get_unique_values(data_frame: pd.DataFrame
                       , selected_columns: list) -> pd.DataFrame:
     unique_values = data_frame[selected_columns]
-    unique_values.drop_duplicates()
+    unique_values = unique_values.drop_duplicates()
     return unique_values
 
 
@@ -33,6 +33,14 @@ def combine(data_frame_1: pd.DataFrame
             , method: str = 'cross') -> pd.DataFrame:
     combined = data_frame_1.merge(data_frame_2, how='cross')
     return combined
+
+
+def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.DataFrame:
+    flatten = data_frame.to_numpy().flatten()
+    flatten = pd.DataFrame(flatten, columns=['COMPANIES'])
+    if del_nans == 'yes':
+        flatten = flatten.dropna()
+    return flatten
 
 
 if __name__ == "__main__":
@@ -44,5 +52,7 @@ if __name__ == "__main__":
     df_combined = df_combined.fillna(np.nan)
     points_5_q7q8 = df_source['Q7M1'][df_source['Q7M1'] != 999].to_frame()
     points_4_q7q8 = df_source[['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
+    points_4_q7q8 = flatten_data_frame(data_frame = points_4_q7q8)
+    points_4_q7q8 = get_unique_values(data_frame = points_4_q7q8, selected_columns = ['COMPANIES'])
     points_2_q7q8 = df_source[['Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
     
