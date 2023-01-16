@@ -43,7 +43,7 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
     return flatten
 
 
-def get_points_info(data_frame: pd.DataFrame, columns: list, index: str, points: int) -> pd.DataFrame:
+def get_points_info(data_frame: pd.DataFrame, columns: list, index: str) -> pd.DataFrame:
     points = df_source[index + columns].dropna(how='all')
     points = points.set_index(index[0])
     columns = points.columns
@@ -73,13 +73,13 @@ if __name__ == "__main__":
     #points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['RECORD_NO', 'COMPANIES'])
     cols = ['X3M2','X3M3','X3M4','X3M5','X3M6','X3M7','X3M8','X3M9','X3M10']
     points_4_q7q8 = df_source[['RecordNo'] + cols].dropna(how='all')
-    points_4_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'], points = 4)
+    points_4_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
     points_4_q7q8.columns = ['RECORD_NO', 'COMPANIES']
     points_4_q7q8['POINTS'] = 4
 
     cols = ['X4M1','X4M2','X4M3','X4M4','X4M5','X4M6','X4M7','X4M8','X4M9','X4M10']   
     points_2_q7q8 = df_source[['RecordNo'] + cols].dropna(how='all')
-    points_2_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'], points = 4)
+    points_2_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
     points_2_q7q8.columns = ['RECORD_NO', 'COMPANIES']
     points_2_q7q8['POINTS'] = 2
   
@@ -91,3 +91,19 @@ if __name__ == "__main__":
     points_1_q7q8['POINTS'] = 1
     df_points = pd.concat([df_points, points_1_q7q8], ignore_index=True)
     df_points = pd.merge(df_points, companies,  how='left', left_on=['COMPANIES'], right_on = ['COMPANY_CODE'])
+    
+#%%
+cols = ['X5M1',	'X5M2',	'X5M3',	'X5M4',	'X5M5',	'X5M6',	'X5M7',	'X5M8',	'X5M9',	'X5M10']
+a = df_source[['RecordNo'] + cols]
+a.columns = ['RecordNo',101,102,103,104,105,106,107,108,109,110]
+
+b = get_points_info(data_frame = a, columns = cols, index = ['RecordNo'])
+#%%
+a.columns[a.columns != 'RecordNo']
+
+#%%
+for row in range(a.shape[0]):
+    for col in a.columns[a.columns != 'RecordNo']:
+        print(a.iloc[row]['RecordNo'], col, a.iloc[row][col])
+
+
