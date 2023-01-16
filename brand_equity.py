@@ -102,8 +102,11 @@ b = get_points_info(data_frame = a, columns = cols, index = ['RecordNo'])
 a.columns[a.columns != 'RecordNo']
 
 #%%
+lista = []
 for row in range(a.shape[0]):
     for col in a.columns[a.columns != 'RecordNo']:
-        print(a.iloc[row]['RecordNo'], col, a.iloc[row][col])
+        lista.append([a.iloc[row]['RecordNo'], col, a.iloc[row][col]])
 
+aa = pd.DataFrame(lista)
 
+#%%
