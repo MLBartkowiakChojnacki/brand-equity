@@ -1,3 +1,6 @@
 Brand-equity:
-1.Brak kodowania dla firm 111-119, które występują w kolumnie Q7M1
+1.Brak kodowania dla firm 111-119 
+nulle = df_points[np.isnan(df_points['COMPANY_CODE'])]
 2.Skąd mam wziąć informacje do jedynek?
+3.Co dla X5 ozncza 999?
+4.

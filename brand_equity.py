@@ -43,7 +43,7 @@ def flatten_data_frame(data_frame: pd.DataFrame, del_nans: str = 'yes') -> pd.Da
     return flatten
 
 
-def get_points_info(data_frame: pd.DataFrame, columns: list, index: str, points: int) -> pd.DataFrame:
+def get_points_info(data_frame: pd.DataFrame, columns: list, index: str) -> pd.DataFrame:
     points = df_source[index + columns].dropna(how='all')
     points = points.set_index(index[0])
     columns = points.columns
@@ -58,30 +58,48 @@ def get_points_info(data_frame: pd.DataFrame, columns: list, index: str, points:
 
 if __name__ == "__main__":
     set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
-    df_source = open_file('Source.Datafile.Brand.Equity')
+    df_source = open_file('Grupa.1')
     companies = open_file('COMPANY')
+
     record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
     df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
     df_combined = df_combined.fillna(np.nan)
     df_combined.columns = ['COMPANIES', 'CLIENT_NAME', 'RECORD_NO']
-    points_5_q7q8 = df_source[['RecordNo','Q7M1']][df_source['Q7M1'] != 999]
+    
+    points_5_q7q8 = df_source[['RecordNo','X3M1']][df_source['X3M1'] != 999]
     points_5_q7q8.columns = ['RECORD_NO', 'COMPANIES']
-    points_5_q7q8['POINTS'] = 5
+    points_5_q7q8['AWARANESS'] = 5
+    
     #points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['RECORD_NO', 'COMPANIES'])
-    points_4_q7q8 = df_source[['RecordNo', 'Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']].dropna(how='all')
-    cols = ['Q7M2', 'Q7M3', 'Q7M4', 'Q7M5', 'Q7M6', 'Q7M7', 'Q7M8', 'Q7M9', 'Q7M10']
-    points_4_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'], points = 4)
+    cols = ['X3M2','X3M3','X3M4','X3M5','X3M6','X3M7','X3M8','X3M9','X3M10']
+    points_4_q7q8 = df_source[['RecordNo'] + cols].dropna(how='all')
+    points_4_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
     points_4_q7q8.columns = ['RECORD_NO', 'COMPANIES']
-    points_4_q7q8['POINTS'] = 4
-    points_2_q7q8 = df_source[['RecordNo', 'Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']].dropna(how='all')
-    cols = ['Q8M1', 'Q8M2', 'Q8M3', 'Q8M4', 'Q8M5', 'Q8M6', 'Q8M7', 'Q8M8', 'Q8M9', 'Q8M10']
-    points_2_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'], points = 4)
+    points_4_q7q8['AWARANESS'] = 4
+
+    cols = ['X4M1','X4M2','X4M3','X4M4','X4M5','X4M6','X4M7','X4M8','X4M9','X4M10']   
+    points_2_q7q8 = df_source[['RecordNo'] + cols].dropna(how='all')
+    points_2_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
     points_2_q7q8.columns = ['RECORD_NO', 'COMPANIES']
-    points_2_q7q8['POINTS'] = 2
+    points_2_q7q8['AWARANESS'] = 2
+  
     df_points = pd.concat([points_5_q7q8, points_4_q7q8, points_2_q7q8], ignore_index=True)
     df_points = df_points.drop_duplicates(subset=['RECORD_NO','COMPANIES'], keep="first")   
     df_points = df_points.query('COMPANIES not in [999, 998]')
+    
     points_1_q7q8 = pd.concat([df_points[['RECORD_NO', 'COMPANIES']], df_combined[['RECORD_NO', 'COMPANIES']]]).drop_duplicates(keep=False)
-    points_1_q7q8['POINTS'] = 1
+    points_1_q7q8['AWARANESS'] = 1
     df_points = pd.concat([df_points, points_1_q7q8], ignore_index=True)
     df_points = pd.merge(df_points, companies,  how='left', left_on=['COMPANIES'], right_on = ['COMPANY_CODE'])
+    
+    cols_familiarity = ['X5M1',	'X5M2',	'X5M3',	'X5M4',	'X5M5',	'X5M6',	'X5M7',	'X5M8',	'X5M9',	'X5M10']
+    df_familiarity = df_source[['RecordNo'] + cols_familiarity]
+    df_familiarity.columns = ['RecordNo',101,102,103,104,105,106,107,108,109,110]
+    
+    list_familiarity = []
+    for row in range(df_familiarity.shape[0]):
+        for col in df_familiarity.columns[df_familiarity.columns != 'RecordNo']:
+            list_familiarity.append([df_familiarity.iloc[row]['RecordNo'], col, df_familiarity.iloc[row][col]])
+    
+    df_familiarity = pd.DataFrame(list_familiarity, columns = ['RECORD_NO', 'COMPANIES', 'FAMILIARITY'])
+    df_points = pd.merge(df_points, df_familiarity,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
