@@ -103,3 +103,5 @@ if __name__ == "__main__":
     
     df_familiarity = pd.DataFrame(list_familiarity, columns = ['RECORD_NO', 'COMPANIES', 'FAMILIARITY'])
     df_points = pd.merge(df_points, df_familiarity,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
+    
