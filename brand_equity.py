@@ -146,3 +146,6 @@ if __name__ == "__main__":
     df_satisfaction = pd.DataFrame(list_satisfaction, columns = ['RECORD_NO', 'COMPANIES', 'SATISFACTION'])
     df_points = pd.merge(df_points, df_satisfaction,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
 
+    columns_preference = ['X10M1', 'X10M2', 'X10M3']
+    df_preference = df_source[['RecordNo'] + columns_preference]
+    
