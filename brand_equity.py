@@ -161,3 +161,8 @@ if __name__ == "__main__":
     df_preference_1['PREFERENCE'] = 1
     df_preference = pd.concat([df_preference_3, df_preference_2, df_preference_1])
     df_points = pd.merge(df_points, df_preference,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
+    columns_reordered = ['RECORD_NO','COMPANY_CODE', 'COMPANY_NAME', 'AWARANESS', 'FAMILIARITY',
+           'Used Last Season/This Season', 'FUTURE_USE', 'SATISFACTION',
+           'PREFERENCE']
+    df_points = df_points[columns_reordered]
