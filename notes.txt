@@ -1,7 +1,8 @@
 Brand-equity:
 1.Brak kodowania dla firm 111-119 
 nulle = df_points[np.isnan(df_points['COMPANY_CODE'])]
-2.Skąd mam wziąć informacje do jedynek?
-3.Co dla X5 ozncza 999?
-4.Czy pozostałym nullom można nadać 1?
+2.Co dla X5 ozncza 999?
+3.Czy pozostałym nullom można nadać 1?
 df_points[df_points.columns[3:]] = df_points[df_points.columns[3:]].fillna(1)
+4.Generalnie jak podchodzić do 999?
+5.Co robić z 200 z ostatniego pytania?
