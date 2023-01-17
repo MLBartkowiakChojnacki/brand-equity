@@ -147,5 +147,17 @@ if __name__ == "__main__":
     df_points = pd.merge(df_points, df_satisfaction,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
 
     columns_preference = ['X10M1', 'X10M2', 'X10M3']
-    df_preference = df_source[['RecordNo'] + columns_preference]
-    
+    df_preference_3 = df_source[['RecordNo', 'X10M1']]
+    df_preference_2 = df_source[['RecordNo', 'X10M2']]
+    df_preference_1 = df_source[['RecordNo', 'X10M3']]
+    df_preference_3 = get_points_info(data_frame=df_preference_3, columns = ['X10M1'], index = ['RecordNo'])
+    df_preference_2 = get_points_info(data_frame=df_preference_2, columns = ['X10M2'], index = ['RecordNo'])
+    df_preference_1 = get_points_info(data_frame=df_preference_1, columns = ['X10M3'], index = ['RecordNo'])
+    df_preference_3.columns = ['RECORD_NO', 'COMPANIES']
+    df_preference_2.columns = ['RECORD_NO', 'COMPANIES']
+    df_preference_1.columns = ['RECORD_NO', 'COMPANIES']
+    df_preference_3['PREFERENCE'] = 5
+    df_preference_2['PREFERENCE'] = 3
+    df_preference_1['PREFERENCE'] = 1
+    df_preference = pd.concat([df_preference_3, df_preference_2, df_preference_1])
+    df_points = pd.merge(df_points, df_preference,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
