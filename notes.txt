@@ -3,4 +3,5 @@ Brand-equity:
 nulle = df_points[np.isnan(df_points['COMPANY_CODE'])]
 2.Skąd mam wziąć informacje do jedynek?
 3.Co dla X5 ozncza 999?
-4.
+4.Czy pozostałym nullom można nadać 1?
+df_points[df_points.columns[3:]] = df_points[df_points.columns[3:]].fillna(1)
