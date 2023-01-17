@@ -148,4 +148,4 @@ if __name__ == "__main__":
 
     columns_preference = ['X10M1', 'X10M2', 'X10M3']
     df_preference = df_source[['RecordNo'] + columns_preference]
-    a
+    
