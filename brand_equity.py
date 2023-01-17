@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan 11 19:38:23 2023
-
 @author: krzys
 """
 
@@ -103,3 +102,34 @@ if __name__ == "__main__":
     
     df_familiarity = pd.DataFrame(list_familiarity, columns = ['RECORD_NO', 'COMPANIES', 'FAMILIARITY'])
     df_points = pd.merge(df_points, df_familiarity,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
+    cols_ui_x6 = ['X6M1','X6M2','X6M3',	'X6M4',	'X6M5',	'X6M6',	'X6M7',	'X6M8','X6M9','X6M10']
+    cols_ui_x7 = ['X7M1','X7M2','X7M3','X7M4','X7M5','X7M6','X7M7','X7M8','X7M9','X7M10']
+    
+    df_ui_x6 = df_source[['RecordNo'] + cols_ui_x6]
+    df_ui_x7 = df_source[['RecordNo'] + cols_ui_x7]
+    df_ui_x6 = get_points_info(data_frame = df_ui_x6, columns = cols_ui_x6, index = ['RecordNo'])
+    df_ui_x7 = get_points_info(data_frame = df_ui_x7, columns = cols_ui_x7, index = ['RecordNo'])
+    df_ui_x6.columns = ['RECORD_NO_X6', 'COMPANIES']
+    df_ui_x7.columns = ['RECORD_NO_X7', 'COMPANIES']
+    
+    df_points['Used Last Season/This Season'] = 1
+    df_points = df_points.merge(right = df_ui_x6, how = 'left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO_X6', 'COMPANIES'])
+    df_points = df_points.merge(right = df_ui_x7, how = 'left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO_X7', 'COMPANIES'])
+    df_points.loc[~np.isnan(df_points['RECORD_NO_X6']), 'Used Last Season/This Season'] = 4
+    df_points.loc[~np.isnan(df_points['RECORD_NO_X7']), 'Used Last Season/This Season'] = 3
+    df_points.loc[df_points['RECORD_NO_X6'] == df_points['RECORD_NO_X7'], 'Used Last Season/This Season'] = 5
+    df_points = df_points.drop(columns = ['RECORD_NO_X6', 'RECORD_NO_X7'])
+
+    colums_future_use = ['X9M1',	'X9M2',	'X9M3',	'X9M4',	'X9M5',	'X9M6'
+                         ,	'X9M7',	'X9M8',	'X9M9',	'X9M10']
+    df_future_use = df_source[['RecordNo'] + colums_future_use]
+    df_future_use.columns = ['RecordNo',101,102,103,104,105,106,107,108,109,110]
+    list_future_use = []
+    for row in range(df_future_use.shape[0]):
+        for col in df_future_use.columns[df_future_use.columns != 'RecordNo']:
+            list_future_use.append([df_future_use.iloc[row]['RecordNo'], col, df_future_use.iloc[row][col]])
+    
+    df_future_use = pd.DataFrame(list_future_use, columns = ['RECORD_NO', 'COMPANIES', 'SATISFACTION'])
+    df_points = pd.merge(df_points, df_familiarity,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
