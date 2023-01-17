@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan 11 19:38:23 2023
-
 @author: krzys
 """
 
@@ -120,4 +119,33 @@ if __name__ == "__main__":
     df_points.loc[~np.isnan(df_points['RECORD_NO_X6']), 'Used Last Season/This Season'] = 4
     df_points.loc[~np.isnan(df_points['RECORD_NO_X7']), 'Used Last Season/This Season'] = 3
     df_points.loc[df_points['RECORD_NO_X6'] == df_points['RECORD_NO_X7'], 'Used Last Season/This Season'] = 5
+    df_points = df_points.drop(columns = ['RECORD_NO_X6', 'RECORD_NO_X7'])
+
+    columns_future_use = ['X8M1',	'X8M2',	'X8M3',	'X8M4',	'X8M5',	'X8M6'
+                          ,	'X8M7',	'X8M8',	'X8M9',	'X8M10']
+    df_future_use = df_source[['RecordNo'] + columns_future_use]
+    df_future_use.columns = ['RecordNo',101,102,103,104,105,106,107,108,109,110] 
+    list_future_use = []
+    for row in range(df_future_use.shape[0]):
+        for col in df_future_use.columns[df_future_use.columns != 'RecordNo']:
+            list_future_use.append([df_future_use.iloc[row]['RecordNo'], col, df_future_use.iloc[row][col]])
+    
+    df_future_use = pd.DataFrame(list_future_use, columns = ['RECORD_NO', 'COMPANIES', 'FUTURE_USE'])
+    df_points = pd.merge(df_points, df_future_use,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
+
+    columns_satisfaction = ['X9M1',	'X9M2',	'X9M3',	'X9M4',	'X9M5',	'X9M6'
+                         ,	'X9M7',	'X9M8',	'X9M9',	'X9M10']
+    df_satisfaction = df_source[['RecordNo'] + columns_satisfaction]
+    df_satisfaction.columns = ['RecordNo',101,102,103,104,105,106,107,108,109,110]
+    list_satisfaction = []
+    for row in range(df_satisfaction.shape[0]):
+        for col in df_satisfaction.columns[df_satisfaction.columns != 'RecordNo']:
+            list_satisfaction.append([df_satisfaction.iloc[row]['RecordNo'], col, df_satisfaction.iloc[row][col]])
+    
+    df_satisfaction = pd.DataFrame(list_satisfaction, columns = ['RECORD_NO', 'COMPANIES', 'SATISFACTION'])
+    df_points = pd.merge(df_points, df_satisfaction,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
+
+    columns_preference = ['X10M1', 'X10M2', 'X10M3']
+    df_preference = df_source[['RecordNo'] + columns_preference]
     
