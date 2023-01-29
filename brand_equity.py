@@ -56,20 +56,20 @@ def get_points_info(data_frame: pd.DataFrame, columns: list, index: str) -> pd.D
 
 
 if __name__ == "__main__":
-    set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
-    df_source = open_file('Grupa.1')
-    companies = open_file('COMPANY')
+    #set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
+    df_source = open_file(r'data/raw/Grupa.1')
+    companies = open_file(r'data/raw/COMPANY')
 
+    #combine data to get every combination of company and recordno
     record_no = get_unique_values(data_frame = df_source, selected_columns = ['RecordNo'])
     df_combined = combine(data_frame_1 = companies, data_frame_2 = record_no)
     df_combined = df_combined.fillna(np.nan)
     df_combined.columns = ['COMPANIES', 'CLIENT_NAME', 'RECORD_NO']
     
+    #get info about points for specified questions for specified columns
     points_5_q7q8 = df_source[['RecordNo','X3M1']][df_source['X3M1'] != 999]
     points_5_q7q8.columns = ['RECORD_NO', 'COMPANIES']
     points_5_q7q8['AWARANESS'] = 5
-    
-    #points_5_q7q8 = get_unique_values(data_frame = points_5_q7q8, selected_columns = ['RECORD_NO', 'COMPANIES'])
     cols = ['X3M2','X3M3','X3M4','X3M5','X3M6','X3M7','X3M8','X3M9','X3M10']
     points_4_q7q8 = df_source[['RecordNo'] + cols].dropna(how='all')
     points_4_q7q8 = get_points_info(data_frame = df_source, columns = cols, index = ['RecordNo'])
@@ -146,6 +146,7 @@ if __name__ == "__main__":
     df_satisfaction = pd.DataFrame(list_satisfaction, columns = ['RECORD_NO', 'COMPANIES', 'SATISFACTION'])
     df_points = pd.merge(df_points, df_satisfaction,  how='left', left_on=['RECORD_NO', 'COMPANIES'], right_on = ['RECORD_NO', 'COMPANIES'])
 
+    #info about points for preference
     columns_preference = ['X10M1', 'X10M2', 'X10M3']
     df_preference_3 = df_source[['RecordNo', 'X10M1']]
     df_preference_2 = df_source[['RecordNo', 'X10M2']]
@@ -167,3 +168,6 @@ if __name__ == "__main__":
                          , 'SATISFACTION','PREFERENCE']
     df_points = df_points[columns_reordered]
     df_points[df_points.columns[3:]] = df_points[df_points.columns[3:]].fillna(1)
+    
+    #save file to  data/processed
+    df_points.to_csv('data/processed/brand_equity.csv')
