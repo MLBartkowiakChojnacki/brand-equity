@@ -170,4 +170,4 @@ if __name__ == "__main__":
     df_points[df_points.columns[3:]] = df_points[df_points.columns[3:]].fillna(1)
     
     #save file to  data/processed
-    df_points.to_csv('data/processed/brand_equity.csv')
+    df_points[~np.isnan(df_points['COMPANY_CODE'])].to_csv('data/processed/brand_equity.csv')
