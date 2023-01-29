@@ -9,8 +9,8 @@ import pandas as pd
 import csv
 import numpy as np
 
-def set_working_directory(path: str) -> None:
-    os.chdir(path)
+def set_working_directory() -> None:
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 def open_file(file_name: str) -> pd.DataFrame:
@@ -56,7 +56,7 @@ def get_points_info(data_frame: pd.DataFrame, columns: list, index: str) -> pd.D
 
 
 if __name__ == "__main__":
-    #set_working_directory(path = r'C:\Users\krzys\OneDrive\Dokumenty\repo_git\brand-equity\data\raw')
+    set_working_directory()
     df_source = open_file(r'data/raw/Grupa.1')
     companies = open_file(r'data/raw/COMPANY')
 
